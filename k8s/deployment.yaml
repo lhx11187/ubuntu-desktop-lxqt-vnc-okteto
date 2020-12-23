@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ubuntu-desktop-lxde-vnc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ubuntu-desktop-lxde-vnc
+  template:
+    metadata:
+      labels:
+        app: ubuntu-desktop-lxde-vnc
+    spec:
+      containers:
+      - image: dorowu/ubuntu-desktop-lxde-vnc:focal-lxqt
+        name: ubuntu-desktop-lxde-vnc
+        ports:
+        - containerPort:6080

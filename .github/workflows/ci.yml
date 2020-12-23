@@ -1,0 +1,76 @@
+#=================================================
+# https://github.com/lhx11187/ubuntu-desktop-lxqt-vnc-okteto
+# Description: ubuntu-desktop-lxqt-vnc-okteto
+# Lisence: MIT
+# Author: lhx11187
+# Blog: https://www.txdn.tk
+#=================================================
+
+# 编译的名称
+name: 自动部署okteto
+
+on:
+  repository_dispatch:
+
+# 编辑文件触发开始编译
+#  push:
+#    branches:
+#      - master
+#    paths:
+#      - '.github/workflows/ci.yml'
+
+
+# release发布触发开始编译
+#  release:
+#    types: published
+
+
+# 定时触发开始编译(utc时间)
+#  schedule:
+#    - cron: '0 3 * * *'
+
+
+# 点☆Star触发开始编译
+#  watch:  
+#     types: [started]
+     
+
+# 任务集
+jobs:
+  build:
+    # 选择虚拟环境
+    runs-on: ubuntu-latest
+    if: github.event.repository.owner.id == github.event.sender.id
+    
+    # 运行步骤
+    steps:
+    
+    # 准备完毕
+    - name: 准备完毕
+      uses: actions/checkout@v2
+    
+    - name: 登录okteto
+      uses: okteto/login@master
+      with:
+        token: ${{ secrets.OKTETO_TOKEN }}
+
+    - name: "激活命名空间"
+      uses: okteto/namespace@master
+      with:
+        name: lhx11187
+
+    - name: "销毁流程"
+      uses: okteto/destroy-pipeline@master
+      with:
+        name: okteto-pipeline
+        
+    - name: "触发流程"
+      uses: okteto/pipeline@master
+      with:
+        name: okteto-pipeline
+        
+    - name: "上传至okteto"
+      uses: okteto/push@master
+      with:
+        namespace: lhx11187
+        name: ubuntu-desktop-lxqt-vnc-okteto
